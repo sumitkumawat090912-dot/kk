@@ -22,7 +22,7 @@ from Crypto.Util.Padding import unpad
 from base64 import b64decode
 
 
-# ✅ Safe duration() function (fixed)
+# ✅ Safe duration() function (no crash even if empty output)
 def duration(filename):
     try:
         result = subprocess.run(
@@ -191,7 +191,8 @@ async def run(cmd):
     proc = await asyncio.create_subprocess_shell(
         cmd,
         stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE)
+        stderr=asyncio.subprocess.PIPE
+    )
 
     stdout, stderr = await proc.communicate()
 
@@ -201,7 +202,7 @@ async def run(cmd):
     if stdout:
         return f'[stdout]\n{stdout.decode()}'
     if stderr:
-        return f'[stderr]\n{stderr.decode()]'
+        return f'[stderr]\n{stderr.decode()}'  # ✅ fixed f-string bracket
 
 
 def old_download(url, file_name, chunk_size=1024 * 10):
