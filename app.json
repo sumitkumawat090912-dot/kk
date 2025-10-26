@@ -1,58 +1,40 @@
+
 {
-    "name": "𝐒𝐚𝐢𝐧𝐢 𝐓𝐱𝐭 𝐋𝐞𝐞𝐜𝐡 𝐁𝐨𝐭",
-    "description": "𝑻𝒆𝒙𝒕 𝑳𝒆𝒆𝒄𝒉 𝑽𝒊𝒅𝒆𝒐 𝑬𝒙𝒕𝒓𝒂𝒄𝒕𝒐𝒓 𝑭𝒐𝒓 𝑻𝒆𝒍𝒆𝒈𝒓𝒂𝒎",
-    "logo": "",
+    "name": "anonymous",
+    "description": "anonymous",
+    "repository": "https://github.com/",
     "keywords": [
-        "text-video",
-        "video-extract",
+        "telegram bot",
         "pyrogram"
     ],
-    "repository": "",
-    "success_url": "",
-    "stack": "container",
     "env": {
-        "API_ID": {
-            "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑨𝒑𝒊 𝑰𝑫",
-            "value": "22182189",
-            "required": true
+        "API_ID":{
+            "description": "Get your telegram API ID from https://my.telegram.org",
+            "value":"20114039"
         },
-        "API_HASH": {
-            "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑨𝒑𝒊 𝑯𝒂𝒔𝒉",
-            "value": "5e7c4088f8e23d0ab61e29ae11960bf5",
-            "required": true
+        "API_HASH":{
+            "description":"Get your telegram API HASH from https://my.telegram.org",
+		    "value":"87297b8f3cc8fc9bbce591ad30da5896"
         },
-        "BOT_TOKEN": {
-            "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑩𝒐𝒕 𝑻𝒐𝒌𝒆𝒏",
-            "value": "",
-            "required": true
+        "BOT_TOKEN":{
+            "description":"Get from BotFather",
+            "value":"7559250442:AAF_HDC3Fb_yG6xHxXkRhhwlMm3LiwT9MkE"
         },
-        "OWNER": {
-            "description": "𝙀𝙣𝙩𝙚𝙧 𝙔𝙤𝙪𝙧 𝙏𝙚𝙡𝙚𝙜𝙧𝙖𝙢 𝙄𝘿",
-            "value": "5680454765",
-            "required": true
-        },
-        "CREDIT": {
-            "description": "𝙀𝙣𝙩𝙚𝙧 𝘾𝙧𝙚𝙙𝙞𝙩 𝙉𝙖𝙢𝙚 𝙞𝙣 𝙖𝙡𝙢𝙤𝙨𝙩 6-8 𝙡𝙚𝙩𝙩𝙚𝙧𝙨",
-            "value": "𝙎𝘼𝙄𝙉𝙄 𝘽𝙊𝙏𝙎",
-            "required": true
-        }
-    },
-    "formation": {
-        "worker": {
-            "quantity": 1,
-            "size": "standard-2x"
-        }
+        "AUTH_USERS":{
+            "description":"Admin/Owner/Friends ID Seperate by ','  Ex: 44578878,8878899",
+             "value":"8172163893"
+       
+	}
     },
     "addons": [],
     "buildpacks": [
         {
-            "url": "https://github.com/amivin/aria2-heroku.git"
-        },
-        {
-            "url": "heroku/python"
-        },       
-        {
-            "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
-        }
-    ]
+	  "url": "heroku/python"
+          "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+	 "url": "https://github.com/heroku/heroku-buildpack-activestorage-preview"
+	}
+
+	    
     }
+
+}
