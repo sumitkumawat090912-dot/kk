@@ -18,10 +18,9 @@ from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 from logs import logging
 from bs4 import BeautifulSoup
-from aiohttp import ClientSession
+from aiohttp import ClientSession, web
 from subprocess import getstatusoutput
 from pytube import YouTube
-from aiohttp import web
 import random
 from pyromod import listen
 from pyrogram import Client, filters
@@ -29,7 +28,6 @@ from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked, InputUserDe
 from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, InputMediaPhoto
-import aiohttp
 import aiofiles
 import zipfile
 import shutil
@@ -40,9 +38,6 @@ import globals
 from utils import progress_bar
 from vars import API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT, AUTH_USERS, TOTAL_USERS, cookies_file_path
 from vars import api_url, api_token
-
-# .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
-
 
 async def drm_handler(bot: Client, m: Message):
     globals.processing_request = True
@@ -65,7 +60,7 @@ async def drm_handler(bot: Client, m: Message):
         x = await m.download()
         await bot.send_document(OWNER, x)
         await m.delete(True)
-        file_name, ext = os.path.splitext(os.path.basename(x))  # Extract filename & extension
+        file_name, ext = os.path.splitext(os.path.basename(x))
         path = f"./downloads/{m.chat.id}"
         with open(x, "r") as f:
             content = f.read()
@@ -79,7 +74,10 @@ async def drm_handler(bot: Client, m: Message):
     if m.document:
         if m.chat.id not in AUTH_USERS:
             print(f"User ID not in AUTH_USERS", m.chat.id)
-            await bot.send_message(m.chat.id, f"<blockquote>__**Oopss! You are not a Premium member\nPLEASE /upgrade YOUR PLAN\nSend me your user id for authorization\nYour User id**__ - `{m.chat.id}`</blockquote>\n")
+            await bot.send_message(
+                m.chat.id,
+                f"<blockquote>__**Oopss! You are not a Premium member\nPLEASE /upgrade YOUR PLAN\nSend me your user id for authorization\nYour User id**__ - `{m.chat.id}`</blockquote>\n"
+            )
             return
 
     pdf_count = 0
@@ -91,7 +89,7 @@ async def drm_handler(bot: Client, m: Message):
     drm_count = 0
     zip_count = 0
     other_count = 0
-    
+
     links = []
     for i in lines:
         if "://" in i:
@@ -115,23 +113,25 @@ async def drm_handler(bot: Client, m: Message):
                 zip_count += 1
             else:
                 other_count += 1
-                    
+
     if not links:
         await m.reply_text("<b>🔹Invalid Input.</b>")
         return
 
     if m.document:
-        editable = await m.reply_text(f"**Total 🔗 links found are {len(links)}\n<blockquote>•PDF : {pdf_count}      •V2 : {v2_count}\n•Img : {img_count}      •YT : {yt_count}\n•zip : {zip_count}       •m3u8 : {m3u8_count}\n•drm : {drm_count}      •Other : {other_count}\n•mpd : {mpd_count}</blockquote>\nSend From where you want to download**")
+        editable = await m.reply_text(
+            f"**Total 🔗 links found are {len(links)}\n<blockquote>•PDF : {pdf_count}      •V2 : {v2_count}\n•Img : {img_count}      •YT : {yt_count}\n•zip : {zip_count}       •m3u8 : {m3u8_count}\n•drm : {drm_count}      •Other : {other_count}\n•mpd : {mpd_count}</blockquote>\nSend From where you want to download**"
+        )
         try:
             input0: Message = await bot.listen(editable.chat.id, timeout=20)
             raw_text = input0.text
             await input0.delete(True)
         except asyncio.TimeoutError:
             raw_text = '1'
-    
-        if int(raw_text) > len(links) :
+
+        if int(raw_text) > len(links):
             await editable.edit(f"🔹**Enter number in range of Index (01-{len(links)})**")
-            processing_request = False  # Reset the processing flag
+            globals.processing_request = False
             await m.reply_text("🔹**Processing Cancled......  **")
             return
 
@@ -142,13 +142,15 @@ async def drm_handler(bot: Client, m: Message):
             await input1.delete(True)
         except asyncio.TimeoutError:
             raw_text0 = '/d'
-      
+
         if raw_text0 == '/d':
             b_name = file_name.replace('_', ' ')
         else:
             b_name = raw_text0
 
-        await editable.edit("__**⚠️Provide the Channel ID or send /d__\n\n<blockquote><i>🔹 Make me an admin to upload.\n🔸Send /id in your channel to get the Channel ID.\n\nExample: Channel ID = -100XXXXXXXXXXX</i></blockquote>\n**")
+        await editable.edit(
+            "__**⚠️Provide the Channel ID or send /d__\n\n<blockquote><i>🔹 Make me an admin to upload.\n🔸Send /id in your channel to get the Channel ID.\n\nExample: Channel ID = -100XXXXXXXXXXX</i></blockquote>\n**"
+        )
         try:
             input7: Message = await bot.listen(editable.chat.id, timeout=20)
             raw_text7 = input7.text
@@ -159,7 +161,7 @@ async def drm_handler(bot: Client, m: Message):
         if "/d" in raw_text7:
             channel_id = m.chat.id
         else:
-            channel_id = raw_text7    
+            channel_id = raw_text7
         await editable.delete()
 
     elif m.text:
@@ -170,7 +172,9 @@ async def drm_handler(bot: Client, m: Message):
             b_name = '**Link Input**'
             await m.delete()
         else:
-            editable = await m.reply_text(f"╭━━━━❰ᴇɴᴛᴇʀ ʀᴇꜱᴏʟᴜᴛɪᴏɴ❱━━➣ \n┣━━⪼ send `144`  for 144p\n┣━━⪼ send `240`  for 240p\n┣━━⪼ send `360`  for 360p\n┣━━⪼ send `480`  for 480p\n┣━━⪼ send `720`  for 720p\n┣━━⪼ send `1080` for 1080p\n╰━━⌈⚡[🦋`{CREDIT}`🦋]⚡⌋━━➣ ")
+            editable = await m.reply_text(
+                f"╭━━━━❰ᴇɴᴛᴇʀ ʀᴇꜱᴏʟᴜᴛɪᴏɴ❱━━➣ \n┣━━⪼ send `144`  for 144p\n┣━━⪼ send `240`  for 240p\n┣━━⪼ send `360`  for 360p\n┣━━⪼ send `480`  for 480p\n┣━━⪼ send `720`  for 720p\n┣━━⪼ send `1080` for 1080p\n╰━━⌈⚡[🦋`{CREDIT}`🦋]⚡⌋━━➣ "
+            )
             input2: Message = await bot.listen(editable.chat.id, filters=filters.text & filters.user(m.from_user.id))
             raw_text2 = input2.text
             quality = f"{raw_text2}p"
@@ -188,21 +192,23 @@ async def drm_handler(bot: Client, m: Message):
                 elif raw_text2 == "720":
                     res = "1280x720"
                 elif raw_text2 == "1080":
-                    res = "1920x1080" 
-                else: 
+                    res = "1920x1080"
+                else:
                     res = "UN"
             except Exception:
-                    res = "UN"
+                res = "UN"
             raw_text = '1'
             raw_text7 = '/d'
             channel_id = m.chat.id
             b_name = '**Link Input**'
             path = os.path.join("downloads", "Free Batch")
             await editable.delete()
-        
+
     if thumb.startswith("http://") or thumb.startswith("https://"):
         getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
         thumb = "thumb.jpg"
+
+    # ... Rest of the code continues exactly as in your original
     else:
         thumb = thumb
 #........................................................................................................................................................................................
